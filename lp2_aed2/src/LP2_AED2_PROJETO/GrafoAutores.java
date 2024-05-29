@@ -43,4 +43,63 @@ public class GrafoAutores {
       grafo.addEdge(v, w);
     }
   }
+
+
+  public void removerAutor(Autor autor) {
+    // Verifica se o autor existe no grafo
+    if (autorParaAutor2.containsKey(autor)) {
+      int indiceARemover = autorParaAutor2.get(autor);
+
+      // Remove o autor dos mapas
+      autorParaAutor2.remove(autor);
+      autor2ParaAutor.remove(indiceARemover);
+
+      // Criar um novo grafo com um vértice a menos
+      Graph novoGrafo = new Graph(contadorVertice - 1);
+
+      // Mapeamento de antigos índices para novos índices
+      Map<Integer, Integer> novoIndice = new HashMap<>();
+      int novoIndiceContador = 0;
+      for (int i = 0; i < contadorVertice; i++) {
+        if (i != indiceARemover) {
+          novoIndice.put(i, novoIndiceContador);
+          novoIndiceContador++;
+        }
+      }
+
+      // Copia as arestas para o novo grafo, excluindo o vértice removido
+      for (int v = 0; v < grafo.V(); v++) {
+        if (v == indiceARemover) continue;
+        for (int w : grafo.adj(v)) {
+          if (w != indiceARemover) {
+            novoGrafo.addEdge(novoIndice.get(v), novoIndice.get(w));
+          }
+        }
+      }
+
+      // Atualiza a referência do grafo
+      grafo = novoGrafo;
+
+      // Atualiza o contador de vértices
+      contadorVertice--;
+
+      // Atualiza os mapas autorParaIndice e indiceParaAutor com novos índices
+      Map<Autor, Integer> novoAutorParaIndice = new HashMap<>();
+      Map<Integer, Autor> novoIndiceParaAutor = new HashMap<>();
+
+      for (Map.Entry<Autor, Integer> entry : autorParaAutor2.entrySet()) {
+        Autor a = entry.getKey();
+        int antigoIndice = entry.getValue();
+        if (antigoIndice != indiceARemover) {
+          int novoIndiceValor = novoIndice.get(antigoIndice);
+          novoAutorParaIndice.put(a, novoIndiceValor);
+          novoIndiceParaAutor.put(novoIndiceValor, a);
+        }
+      }
+
+      autorParaAutor2 = novoAutorParaIndice;
+      autor2ParaAutor = novoIndiceParaAutor;
+    }
+  }
+
 }
