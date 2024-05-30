@@ -1,19 +1,30 @@
 package LP2_AED2_PROJETO;
 
-import String;
+import java.util.*;
 
 public class Publicacao {
+  private String nome;
+  private int ano;
 
-  public int id;
-
-  public String nome;
-
-  public int ano;
-
-    public Database myDatabase;
-
-  public String getNome() {
-  return null;
+  public Publicacao(String nome, int ano) {
+    this.nome = nome;
+    this.ano = ano;
   }
 
+  // Getters e setters
+  public String getNome() {
+    return nome;
+  }
+
+  public void setNome(String nome) {
+    this.nome = nome;
+  }
+
+  public int getAno() {
+    return ano;
+  }
+
+  public void setAno(int ano) {
+    this.ano = ano;
+  }
 }

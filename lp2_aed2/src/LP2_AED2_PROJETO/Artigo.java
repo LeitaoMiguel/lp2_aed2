@@ -4,6 +4,7 @@ package LP2_AED2_PROJETO;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+
 public class Artigo {
   private String titulo;
   private Date data;
@@ -39,6 +40,10 @@ public class Artigo {
     return referencias;
   }
 
+  public void adicionarAutor(Autor autor) {
+    this.autores.add(autor);
+  }
+
   public void adicionarReferencia(Artigo referencia) {
     referencias.add(referencia);
   }
@@ -64,6 +69,45 @@ public class Artigo {
       visualizacoesMensais.put(mes, visualizacoesMensais.getOrDefault(mes, 0) + visualizacoes.get(data));
     }
     return visualizacoesMensais;
+  }
+
+  public int getVisualizacoes(Date inicio, Date fim) {
+    int totalVisualizacoes = 0;
+    for (Map.Entry<Date, Integer> entry : visualizacoes.entrySet()) {
+      Date data = entry.getKey();
+      if ((data.equals(inicio) || data.after(inicio)) && (data.equals(fim) || data.before(fim))) {
+        totalVisualizacoes += entry.getValue();
+      }
+    }
+    return totalVisualizacoes;
+  }
+
+  public int getDownloads(Date inicio, Date fim) {
+    int totalDownloads = 0;
+    for (Map.Entry<Date, Integer> entry : downloads.entrySet()) {
+      Date data = entry.getKey();
+      if ((data.equals(inicio) || data.after(inicio)) && (data.equals(fim) || data.before(fim))) {
+        totalDownloads += entry.getValue();
+      }
+    }
+    return totalDownloads;
+  }
+
+  public int getUsoTotal(Date inicio, Date fim) {
+    int totalUso = 0;
+    for (Map.Entry<Date, Integer> entry : visualizacoes.entrySet()) {
+      Date data = entry.getKey();
+      if ((data.equals(inicio) || data.after(inicio)) && (data.equals(fim) || data.before(fim))) {
+        totalUso += entry.getValue();
+      }
+    }
+    for (Map.Entry<Date, Integer> entry : downloads.entrySet()) {
+      Date data = entry.getKey();
+      if ((data.equals(inicio) || data.after(inicio)) && (data.equals(fim) || data.before(fim))) {
+        totalUso += entry.getValue();
+      }
+    }
+    return totalUso;
   }
 
   public Map<String, Integer> getDownloadsMensais() {
@@ -107,4 +151,5 @@ public class Artigo {
     }
     return votosMensais;
   }
+
 }

@@ -1,8 +1,11 @@
 package LP2_AED2_PROJETO;
 
 import edu.princeton.cs.algs4.*;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.lang.reflect.Array;
+import java.util.*;
+import java.util.Date;
+
 
 public class Database {
   private RedBlackBST<String, Autor> autoresPorNome;
@@ -52,7 +55,7 @@ public class Database {
     return this.autoresPorNome.get(nome);
   }
 
-  public Iterable<Autor> listarAutores() {
+  public Iterable<String> listarAutores() {
     return this.autoresPorNome.keys();
   }
 
@@ -90,7 +93,7 @@ public class Database {
     return this.artigosPorTitulo.get(titulo);
   }
 
-  public Iterable<Artigo> listarArtigos() {
+  public Iterable<String> listarArtigos() {
     return this.artigosPorTitulo.keys();
   }
 
@@ -107,7 +110,94 @@ public class Database {
     return this.publicacoesPorNome.get(nome);
   }
 
-  public Iterable<Publicacao> listarPublicacoes() {
+  public Iterable<String> listarPublicacoes() {
     return this.publicacoesPorNome.keys();
   }
+
+  public ArrayList<Artigo> artigosPorAutorNoPeriodo(String nomeAutor, Date inicio, Date fim) {
+    Autor autor = buscarAutor(nomeAutor);
+    ArrayList<Artigo> artigosNoPeriodo = new ArrayList<>();
+
+    if (autor != null) {
+      for (Artigo artigo : autor.getHistoricoArtigos()) {
+        if (!artigo.getData().before(inicio) && !artigo.getData().after(fim)) {
+          artigosNoPeriodo.add(artigo);
+        }
+      }
+    }
+
+    return artigosNoPeriodo;
+  }
+
+  public ArrayList<Artigo> artigosNaoVisualizadosOuDescarregadosNoPeriodo(Date inicio, Date fim) {
+    ArrayList<Artigo> artigosNaoVisualizadosOuDescarregados = new ArrayList<>();
+
+    for (String titulo : artigosPorTitulo.keys()) {
+      Artigo artigo = artigosPorTitulo.get(titulo);
+      if (artigo.getVisualizacoes(inicio, fim) == 0 && artigo.getDownloads(inicio, fim) == 0) {
+        artigosNaoVisualizadosOuDescarregados.add(artigo);
+      }
+    }
+
+    return artigosNaoVisualizadosOuDescarregados;
+  }
+
+  public ArrayList<Autor> autoresQueCitaramArtigosNoPeriodo(ArrayList<String> titulosArtigos, Date inicio, Date fim) {
+    ArrayList<Autor> autores = new ArrayList<>();
+
+    for (String titulo : artigosPorTitulo.keys()) {
+      Artigo artigo = artigosPorTitulo.get(titulo);
+      if (!artigo.getData().before(inicio) && !artigo.getData().after(fim)) {
+        for (String tituloCitado : titulosArtigos) {
+          if (artigo.getReferencias().contains(buscarArtigo(tituloCitado))) {
+            for (Autor autor : artigo.getAutores()) {
+              if (!autores.contains(autor)) {
+                autores.add(autor);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return autores;
+  }
+
+  public ArrayList<Artigo> top3ArtigosMaisUsadosNoPeriodo(Date inicio, Date fim) {
+    PriorityQueue<Artigo> pq = new PriorityQueue<>(
+            (a1, a2) -> Integer.compare(a2.getUsoTotal(inicio, fim), a1.getUsoTotal(inicio, fim))
+    );
+
+    for (String titulo : artigosPorTitulo.keys()) {
+      Artigo artigo = artigosPorTitulo.get(titulo);
+      pq.offer(artigo);
+    }
+
+    ArrayList<Artigo> top3 = new ArrayList<>();
+    for (int i = 0; i < 3 && !pq.isEmpty(); i++) {
+      top3.add(pq.poll());
+    }
+
+    return top3;
+  }
+
+  public ArrayList<Citacao> citacoesDeJournalNoPeriodo(String nomeJournal, Date inicio, Date fim) {
+    ArrayList<Citacao> citacoes = new ArrayList<>();
+
+    for (String titulo : artigosPorTitulo.keys()) {
+      Artigo artigo = artigosPorTitulo.get(titulo);
+      if (artigo.getPublicacao() instanceof Journal && artigo.getPublicacao().getNome().equals(nomeJournal)) {
+        if (!artigo.getData().before(inicio) && !artigo.getData().after(fim)) {
+          for (Artigo referencia : artigo.getReferencias()) {
+            if (!referencia.getData().before(inicio) && !referencia.getData().after(fim)) {
+              citacoes.add(new Citacao(artigo, referencia));
+            }
+          }
+        }
+      }
+    }
+
+    return citacoes;
+  }
+
 }
