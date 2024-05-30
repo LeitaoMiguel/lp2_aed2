@@ -3,8 +3,11 @@ package LP2_AED2_PROJETO;
 import edu.princeton.cs.algs4.*;
 
 import edu.princeton.cs.algs4.Digraph;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Date;
 
 public class GrafoArtigos {
   private Digraph grafo;
@@ -98,6 +101,68 @@ public class GrafoArtigos {
       artigoParaIndice = novoArtigoParaIndice;
       indiceParaArtigo = novoIndiceParaArtigo;
     }
+  }
+
+  // Listar artigos por publicação e período
+  public ArrayList<Artigo> listarArtigosPorPublicacaoEPeriodo(String nomePublicacao, Date inicio, Date fim) {
+    ArrayList<Artigo> resultado = new ArrayList<>();
+    for (Artigo artigo : artigoParaIndice.keySet()) {
+      if (artigo.getPublicacao().getNome().equals(nomePublicacao) &&
+              !artigo.getData().before(inicio) && !artigo.getData().after(fim)) {
+        resultado.add(artigo);
+      }
+    }
+    return resultado;
+  }
+
+  // Calcular citações de 1ª ordem
+  public int calcularCitacoesPrimeiraOrdem(Artigo artigo) {
+    int v = artigoParaIndice.getOrDefault(artigo, -1);
+    if (v == -1) return 0;
+    return grafo.indegree(v);
+  }
+
+  // Calcular citações de 2ª ordem
+  public int calcularCitacoesSegundaOrdem(Artigo artigo) {
+    int v = artigoParaIndice.getOrDefault(artigo, -1);
+    if (v == -1) return 0;
+    int citacoesSegundaOrdem = 0;
+    for (int w : grafo.adj(v)) {
+      citacoesSegundaOrdem += grafo.indegree(w);
+    }
+    return citacoesSegundaOrdem;
+  }
+
+  // Calcular autocitações
+  public int calcularAutocitacoes(Artigo artigo) {
+    int autocitacoes = 0;
+    ArrayList<Autor> autores = artigo.getAutores();
+    for (Artigo referencia : artigo.getReferencias()) {
+      for (Autor autor : referencia.getAutores()) {
+        if (autores.contains(autor)) {
+          autocitacoes++;
+          break;
+        }
+      }
+    }
+    return autocitacoes;
+  }
+
+  // Selecionar sub-grafo por tipo de publicação
+  public GrafoArtigos selecionarSubGrafoPorTipo(String tipoPublicacao) {
+    GrafoArtigos subGrafo = new GrafoArtigos();
+    for (Artigo artigo : artigoParaIndice.keySet()) {
+      if (artigo.getPublicacao().getTipo().equals(tipoPublicacao)) {
+        subGrafo.adicionarArtigo(artigo);
+      }
+    }
+    return subGrafo;
+  }
+
+  // Verificar se o grafo é conexo
+  public boolean isConexo() {
+    edu.princeton.cs.algs4.ConnectedComponents cc = new edu.princeton.cs.algs4.ConnectedComponents(grafo);
+    return cc.count() == 1;
   }
 
 }

@@ -1,5 +1,7 @@
 package LP2_AED2_PROJETO;
 
+import java.util.Date;
+
 public class Citacao {
     private Artigo artigo;
     private Artigo referencia;
@@ -17,9 +19,21 @@ public class Citacao {
         return referencia;
     }
 
+    public void setArtigo(Artigo artigo) {
+        this.artigo = artigo;
+    }
+
+    public void setReferencia(Artigo referencia) {
+        this.referencia = referencia;
+    }
+
     @Override
     public String toString() {
         return artigo.getTitulo() + " citou " + referencia.getTitulo();
+    }
+
+    public Date getData() {
+        return this.referencia.getData();
     }
 }
 

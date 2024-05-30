@@ -9,15 +9,17 @@ public class Artigo {
   private String titulo;
   private Date data;
   private ArrayList<Autor> autores;
-  private ArrayList<Artigo> referencias;
+  private Publicacao publicacao;
+  private ArrayList<Citacao> referencias;
   private Map<Date, Integer> visualizacoes;
   private Map<Date, Integer> downloads;
   private Map<Date, Integer> votos;
 
-  public Artigo(String titulo, Date data, ArrayList<Autor> autores) {
+  public Artigo(String titulo, Date data,Publicacao publicacao,ArrayList<Autor> autores) {
     this.titulo = titulo;
     this.data = data;
     this.autores = autores;
+    this.publicacao = publicacao;
     this.referencias = new ArrayList<>();
     this.visualizacoes = new HashMap<>();
     this.downloads = new HashMap<>();
@@ -36,16 +38,28 @@ public class Artigo {
     return autores;
   }
 
-  public ArrayList<Artigo> getReferencias() {
+  public ArrayList<Citacao> getReferencias() {
     return referencias;
+  }
+
+  public Publicacao getPublicacao() {
+    return publicacao;
+  }
+
+  public void setPublicacao(Publicacao publicacao) {
+    this.publicacao = publicacao;
   }
 
   public void adicionarAutor(Autor autor) {
     this.autores.add(autor);
   }
 
-  public void adicionarReferencia(Artigo referencia) {
+  public void adicionarReferencia(Citacao referencia) {
     referencias.add(referencia);
+  }
+
+  public void remove(Artigo artigo){
+     artigo.publicacao = null;
   }
 
   public void adicionarVisualizacao(Date data) {

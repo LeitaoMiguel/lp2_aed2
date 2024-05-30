@@ -83,8 +83,8 @@ public class Database {
       }
 
       // Atualizar as referências de outros artigos
-      for (Artigo refArtigo : artigo.getReferencias()) {
-        refArtigo.getReferencias().remove(artigo);
+      for (Citacao refArtigo : artigo.getReferencias()) {
+        refArtigo.getReferencia().remove(artigo);
       }
     }
   }
@@ -183,14 +183,24 @@ public class Database {
 
   public ArrayList<Citacao> citacoesDeJournalNoPeriodo(String nomeJournal, Date inicio, Date fim) {
     ArrayList<Citacao> citacoes = new ArrayList<>();
+    ArrayList<String> titulos = new ArrayList<>();
 
+    // Coleta os títulos dos artigos
     for (String titulo : artigosPorTitulo.keys()) {
+      titulos.add(titulo);
+    }
+
+    // Itera sobre os títulos com um for normal
+    for (int i = 0; i < titulos.size(); i++) {
+      String titulo = titulos.get(i);
       Artigo artigo = artigosPorTitulo.get(titulo);
-      if (artigo.getPublicacao() instanceof Journal && artigo.getPublicacao().getNome().equals(nomeJournal)) {
+      if (artigo.getPublicacao() instanceof Jornal && artigo.getPublicacao().getNome().equals(nomeJournal)) {
         if (!artigo.getData().before(inicio) && !artigo.getData().after(fim)) {
-          for (Artigo referencia : artigo.getReferencias()) {
+          ArrayList<Citacao> referencias = artigo.getReferencias();
+          for (int j = 0; j < referencias.size(); j++) {
+            Citacao referencia = referencias.get(j);
             if (!referencia.getData().before(inicio) && !referencia.getData().after(fim)) {
-              citacoes.add(new Citacao(artigo, referencia));
+              citacoes.add(new Citacao(artigo, referencia.getReferencia()));
             }
           }
         }
