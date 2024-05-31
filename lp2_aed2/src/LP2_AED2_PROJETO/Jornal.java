@@ -19,6 +19,9 @@ public class Jornal extends Publicacao{
         return publisher;
     }
 
+    public String getTipo(){
+        return "Jornal";
+    }
     public void setPublisher(String publisher) {
         this.publisher = publisher;
     }

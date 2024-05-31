@@ -15,6 +15,10 @@ public class Conferencia extends Publicacao {
         return numeroEdicao;
     }
 
+    public String getTipo(){
+        return "Conferencia";
+    }
+
     public void setNumeroEdicao(int numeroEdicao) {
         this.numeroEdicao = numeroEdicao;
     }

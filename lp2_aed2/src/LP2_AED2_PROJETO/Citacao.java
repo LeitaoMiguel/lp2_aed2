@@ -1,5 +1,6 @@
 package LP2_AED2_PROJETO;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Citacao {
@@ -34,6 +35,10 @@ public class Citacao {
 
     public Date getData() {
         return this.referencia.getData();
+    }
+
+    public ArrayList<Autor> getAutores() {
+        return this.referencia.getAutores();
     }
 }
 

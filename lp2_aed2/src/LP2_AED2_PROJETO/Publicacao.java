@@ -2,7 +2,7 @@ package LP2_AED2_PROJETO;
 
 import java.util.*;
 
-public class Publicacao {
+public abstract class Publicacao {
   private String nome;
   private int ano;
 
@@ -27,4 +27,6 @@ public class Publicacao {
   public void setAno(int ano) {
     this.ano = ano;
   }
+
+  public abstract String getTipo();
 }

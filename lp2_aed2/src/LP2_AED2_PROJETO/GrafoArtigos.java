@@ -137,7 +137,7 @@ public class GrafoArtigos {
   public int calcularAutocitacoes(Artigo artigo) {
     int autocitacoes = 0;
     ArrayList<Autor> autores = artigo.getAutores();
-    for (Artigo referencia : artigo.getReferencias()) {
+    for (Citacao referencia : artigo.getReferencias()) {
       for (Autor autor : referencia.getAutores()) {
         if (autores.contains(autor)) {
           autocitacoes++;
@@ -161,8 +161,27 @@ public class GrafoArtigos {
 
   // Verificar se o grafo é conexo
   public boolean isConexo() {
-    edu.princeton.cs.algs4.ConnectedComponents cc = new edu.princeton.cs.algs4.ConnectedComponents(grafo);
-    return cc.count() == 1;
+    if (grafo.V() == 0) return true;
+    boolean[] visitados = new boolean[grafo.V()];
+    dfs(0, visitados);
+
+    for (boolean visitado : visitados) {
+      if (!visitado) {
+        return false;
+      }
+    }
+    return true;
   }
+
+  // Busca em profundidade (DFS) para verificar conectividade
+  private void dfs(int v, boolean[] visitados) {
+    visitados[v] = true;
+    for (int w : grafo.adj(v)) {
+      if (!visitados[w]) {
+        dfs(w, visitados);
+      }
+    }
+  }
+
 
 }
